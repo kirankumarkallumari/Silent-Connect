@@ -138,19 +138,16 @@ function CreatePage() {
             <h2 className="text-2xl font-bold text-purple-600">{code}</h2>
              
             <div className="mt-4 flex justify-center">
-  <QRCodeCanvas value={`${window.location.origin}/view/${code}`} />
-</div>
-
-<div className="mt-4 flex justify-center">
-  <a
-    href={`${window.location.origin}/view/${code}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-xl shadow hover:scale-105 transition"
-  >
-    🚀 Open Connection
-  </a>
-</div>
+            <QRCodeCanvas value={`${window.location.origin}/view/${code}`} />
+          </div>
+           <a
+           href={`${window.location.origin}/view/${code}`}
+           target="_blank"
+           rel="noopener noreferrer"
+           className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition"
+            >
+           🔗 Open Link
+          </a>
 
             <button
               onClick={sendCreatorInterest}
