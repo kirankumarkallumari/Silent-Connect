@@ -95,7 +95,7 @@ function ViewPage() {
 
     const res = await axios.post('https://silent-connect-4b6e.onrender.com/api/send-message', {
       code,
-      sender: "user",
+      sender: "👩",
       message: newMsg
     });
 

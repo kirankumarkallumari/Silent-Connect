@@ -87,7 +87,7 @@ function CreatePage() {
 
       await axios.post('https://silent-connect-4b6e.onrender.com/api/send-message', {
         code,
-        sender: "creator",
+        sender: "👦",
         message: newMsg
       });
 
