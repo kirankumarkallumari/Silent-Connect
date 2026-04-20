@@ -165,11 +165,11 @@ function ViewPage() {
 
               <div className="flex mt-2">
                 <input
-                  value={newMsg}
-                  onChange={(e) => setNewMsg(e.target.value)}
-                  className="flex-1 p-2 border rounded"
-                  placeholder="Type message..."
-                />
+                 value={newMsg}
+                 onChange={(e) => setNewMsg(e.target.value)}
+                 className="flex-1 p-2 border rounded text-black placeholder-gray-500 bg-white"
+                 placeholder="Type message..."
+                 />
                 <button
                   onClick={sendMessage}
                   className="ml-2 bg-pink-500 text-white px-3 rounded"
@@ -237,7 +237,7 @@ function ViewPage() {
               className={`px-4 py-2 rounded ${
                 !userInsta.trim() || !userMsg.trim()
                   ? "bg-gray-400"
-                  : "bg-pink-500 text-white"
+                  : "bg-pinSk-500 text-white"
               }`}
             >
               Send 💌
