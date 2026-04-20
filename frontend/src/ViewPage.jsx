@@ -231,7 +231,7 @@ function ViewPage() {
               <p className="text-red-500 text-sm mb-2">{errorMsg}</p>
             )}
 
-            <button
+            {/* <button
               disabled={!userInsta.trim() || !userMsg.trim()}
               onClick={sendResponse}
               className={`px-4 py-2 rounded ${
@@ -241,7 +241,21 @@ function ViewPage() {
               }`}
             >
               Send 💌
-            </button>
+            </button> */}
+            <button
+  onClick={sendResponse}
+  disabled={!userInsta.trim() || !userMsg.trim()}
+  style={{
+    backgroundColor: !userInsta.trim() || !userMsg.trim() ? "#9ca3af" : "#000000",
+    color: "white",
+    padding: "8px 16px",
+    borderRadius: "8px",
+    border: "none",
+    cursor: "pointer"
+  }}
+>
+  Send 💌
+</button>
           </div>
         )}
 
