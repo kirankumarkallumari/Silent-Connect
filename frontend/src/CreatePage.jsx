@@ -87,7 +87,7 @@ function CreatePage() {
 
       await axios.post('https://silent-connect-4b6e.onrender.com/api/send-message', {
         code,
-        sender: "👦",
+        sender: "creator",
         message: newMsg
       });
 
@@ -136,18 +136,11 @@ function CreatePage() {
 
             <p className="text-sm text-gray-500">Your Code</p>
             <h2 className="text-2xl font-bold text-purple-600">{code}</h2>
-             
+
             <div className="mt-4 flex justify-center">
-            <QRCodeCanvas value={`${window.location.origin}/view/${code}`} />
-          </div>
-           <a
-           href={`${window.location.origin}/view/${code}`}
-           target="_blank"
-           rel="noopener noreferrer"
-           className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:scale-105 transition"
-            >
-           🔗 Open Link
-          </a>
+              {/* <QRCodeCanvas value={`http://localhost:5173/view/${code}`} /> */}
+              <QRCodeCanvas value={`${window.location.origin}/view/${code}`} />
+            </div>
 
             <button
               onClick={sendCreatorInterest}
