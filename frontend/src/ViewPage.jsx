@@ -17,7 +17,7 @@ function ViewPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/code/${code}`);
+        const res = await axios.get(`https://silent-connect-4b6e.onrender.com/api/code/${code}`);
         setData(res.data);
       } catch (err) {
         if (err.response?.status === 410) {
@@ -34,14 +34,14 @@ function ViewPage() {
   }, [code]);
 
   const fetchMessages = async () => {
-  const res = await axios.get(`http://localhost:5000/api/messages/${code}`);
+  const res = await axios.get(`https://silent-connect-4b6e.onrender.com/api/messages/${code}`);
   setChat(res.data);
 };
 
   // 🔥 CHECK MATCH FUNCTION
   const checkMatch = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/match/${code}`);
+      const res = await axios.get(`https://silent-connect-4b6e.onrender.com/api/match/${code}`);
       console.log("Match API:", res.data); // debug
 
       if (res.data.match) {
@@ -74,7 +74,7 @@ function ViewPage() {
   // 🔥 SEND RESPONSE
   const sendResponse = async () => {
     try {
-      await axios.post('http://localhost:5000/api/respond', {
+      await axios.post('https://silent-connect-4b6e.onrender.com/api/respond', {
         code,
         instagram: userInsta,
         message: userMsg
@@ -93,7 +93,7 @@ function ViewPage() {
   try {
     console.log("Sending:", newMsg);
 
-    const res = await axios.post('http://localhost:5000/api/send-message', {
+    const res = await axios.post('https://silent-connect-4b6e.onrender.com/api/send-message', {
       code,
       sender: "user",
       message: newMsg

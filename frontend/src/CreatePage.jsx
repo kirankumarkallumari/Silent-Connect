@@ -15,7 +15,7 @@ function CreatePage() {
 
   // 🔥 CREATE CODE
   const createCode = async () => {
-    const res = await axios.post('http://localhost:5000/api/create', {
+    const res = await axios.post('https://silent-connect-4b6e.onrender.com/api/create', {
       message,
       instagram
     });
@@ -25,7 +25,7 @@ function CreatePage() {
   // 💖 CREATOR INTEREST
   const sendCreatorInterest = async () => {
     try {
-      await axios.post('http://localhost:5000/api/creator-interest', {
+      await axios.post('https://silent-connect-4b6e.onrender.com/api/creator-interest', {
         code
       });
       alert("💖 You liked back!");
@@ -37,7 +37,7 @@ function CreatePage() {
   // 🔥 CHECK MATCH
   const checkMatch = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/match/${code}`);
+      const res = await axios.get(`https://silent-connect-4b6e.onrender.com/api/match/${code}`);
 
       if (res.data.match) {
         setIsMatch(true);
@@ -62,7 +62,7 @@ function CreatePage() {
   // 🔥 FETCH CHAT
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/messages/${code}`);
+      const res = await axios.get(`https://silent-connect-4b6e.onrender.com/api/messages/${code}`);
       setChat(res.data);
     } catch (err) {
       console.log(err);
@@ -85,7 +85,7 @@ function CreatePage() {
     try {
       if (!newMsg.trim()) return;
 
-      await axios.post('http://localhost:5000/api/send-message', {
+      await axios.post('https://silent-connect-4b6e.onrender.com/api/send-message', {
         code,
         sender: "creator",
         message: newMsg
@@ -138,7 +138,8 @@ function CreatePage() {
             <h2 className="text-2xl font-bold text-purple-600">{code}</h2>
 
             <div className="mt-4 flex justify-center">
-              <QRCodeCanvas value={`http://localhost:5173/view/${code}`} />
+              {/* <QRCodeCanvas value={`http://localhost:5173/view/${code}`} /> */}
+              <QRCodeCanvas value={`${window.location.origin}/view/${code}`} />
             </div>
 
             <button
