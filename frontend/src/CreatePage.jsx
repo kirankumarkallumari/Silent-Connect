@@ -141,6 +141,23 @@ function CreatePage() {
               {/* <QRCodeCanvas value={`http://localhost:5173/view/${code}`} /> */}
               <QRCodeCanvas value={`${window.location.origin}/view/${code}`} />
             </div>
+            <div style={{ marginTop: "12px", textAlign: "center" }}>
+  <a
+    href={`${window.location.origin}/view/${code}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      background: "#3b82f6",
+      color: "white",
+      padding: "8px 16px",
+      borderRadius: "8px",
+      textDecoration: "none",
+      display: "inline-block"
+    }}
+  >
+    🔗 Open Link
+  </a>
+</div>
 
             <button
               onClick={sendCreatorInterest}
