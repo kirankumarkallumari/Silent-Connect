@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+const BASE_URL = "https://silent-connect-4b6e.onrender.com";
+
 function ViewPage() {
   const { code } = useParams();
 
@@ -11,13 +13,15 @@ function ViewPage() {
   const [userMsg, setUserMsg] = useState('');
   const [isMatch, setIsMatch] = useState(false);
   const [matchData, setMatchData] = useState(null);
-  const [chat,setChat] = useState([]);
-  const [newMsg,setNewMsg] = useState('');
+  const [chat, setChat] = useState([]);
+  const [newMsg, setNewMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+
   // 🔥 FETCH DATA
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`https://silent-connect-4b6e.onrender.com/api/code/${code}`);
+        const res = await axios.get(`${BASE_URL}/api/code/${code}`);
         setData(res.data);
       } catch (err) {
         if (err.response?.status === 410) {
@@ -33,141 +37,149 @@ function ViewPage() {
     fetchData();
   }, [code]);
 
+  // 🔥 FETCH CHAT
   const fetchMessages = async () => {
-  const res = await axios.get(`https://silent-connect-4b6e.onrender.com/api/messages/${code}`);
-  setChat(res.data);
-};
+    try {
+      const res = await axios.get(`${BASE_URL}/api/messages/${code}`);
+      setChat(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  // 🔥 CHECK MATCH FUNCTION
+  // 🔥 CHECK MATCH
   const checkMatch = async () => {
     try {
-      const res = await axios.get(`https://silent-connect-4b6e.onrender.com/api/match/${code}`);
-      console.log("Match API:", res.data); // debug
+      const res = await axios.get(`${BASE_URL}/api/match/${code}`);
 
       if (res.data.match) {
         setIsMatch(true);
-        setMatchData(res.data); //this stores full data
+        setMatchData(res.data);
       }
     } catch (err) {
       console.log("Match error:", err);
     }
   };
+
+  // 🔄 MATCH POLLING (STOPS AFTER MATCH)
   useEffect(() => {
-  if (!isMatch) return;
+    if (isMatch) return;
 
-  const interval = setInterval(() => {
-    fetchMessages();
-  }, 2000);
-
-  return () => clearInterval(interval);
-}, [isMatch]);
-
-  // 🔥 AUTO CHECK MATCH EVERY 2 SEC
-  useEffect(() => {
     const interval = setInterval(() => {
       checkMatch();
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isMatch]);
 
-  // 🔥 SEND RESPONSE
+  // 🔄 CHAT POLLING
+  useEffect(() => {
+    if (!isMatch) return;
+
+    const interval = setInterval(() => {
+      fetchMessages();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isMatch]);
+
+  // 💌 SEND RESPONSE (VALIDATION FIXED)
   const sendResponse = async () => {
     try {
-      await axios.post('https://silent-connect-4b6e.onrender.com/api/respond', {
+      if (!userInsta.trim() || !userMsg.trim()) {
+        setErrorMsg("⚠️ Please fill both fields before sending");
+        return;
+      }
+
+      setErrorMsg('');
+
+      await axios.post(`${BASE_URL}/api/respond`, {
         code,
         instagram: userInsta,
         message: userMsg
       });
 
       alert("💖 Response sent!");
-
-      // check immediately also
       checkMatch();
 
     } catch (err) {
-      console.log("Response error:", err);
+      console.log(err);
     }
   };
+
+  // 💬 SEND CHAT MESSAGE
   const sendMessage = async () => {
-  try {
-    console.log("Sending:", newMsg);
+    try {
+      if (!newMsg.trim()) return;
 
-    const res = await axios.post('https://silent-connect-4b6e.onrender.com/api/send-message', {
-      code,
-      sender: "👩",
-      message: newMsg
-    });
+      await axios.post(`${BASE_URL}/api/send-message`, {
+        code,
+        sender: "👩",
+        message: newMsg
+      });
 
-    console.log("Response:", res.data);
+      setNewMsg('');
+      fetchMessages();
 
-    setNewMsg('');
-    fetchMessages();
-
-  } catch (err) {
-    console.log("ERROR:", err.response?.data || err.message);
-  }
-};
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // ⏳ STATES
   if (!data) return <h2>Loading...</h2>;
   if (data.error) return <h2>{data.error}</h2>;
 
-  // ✅ UI
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-200 via-pink-200 to-red-200">
 
       <div className="bg-white/80 backdrop-blur-lg p-8 rounded-3xl shadow-2xl w-[350px] text-center">
 
-        {/* 💖 MATCH UI */}
-        {isMatch && (
-  <div className="mt-4">
-
-    <h2 className="text-lg font-bold mb-2">💬 Chat</h2>
-
-    <div className="h-40 overflow-y-auto bg-white p-2 rounded border">
-      {chat.map((msg, index) => (
-        <p key={index} className="text-sm">
-          <b>{msg.sender}:</b> {msg.message}
-        </p>
-      ))}
-    </div>
-
-    <div className="flex mt-2">
-      <input
-        value={newMsg}
-        onChange={(e) => setNewMsg(e.target.value)}
-        className="flex-1 p-2 border rounded"
-        placeholder="Type message..."
-      />
-      <button
-        onClick={sendMessage}
-        className="ml-2 bg-pink-500 text-white px-3 rounded"
-      >
-        Send
-      </button>
-    </div>
-
-  </div>
-)}
+        {/* 💖 MATCH + CHAT */}
         {isMatch && matchData && (
-         <div className="mb-4 p-4 bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-2xl shadow-lg animate-pulse">
+          <div className="mb-4 p-4 bg-gradient-to-r from-pink-400 to-purple-500 text-white rounded-2xl shadow-lg">
 
-         <h1 className="text-xl font-bold mb-2">
-          💖 It's a Match!
-          </h1>
+            <h1 className="text-xl font-bold mb-2">
+              💖 It's a Match!
+            </h1>
 
-        <div className="text-sm mb-2">
-         <p>👨 You: @{matchData.creator_instagram}</p>
-         <p>👩 Them: @{matchData.responder_instagram}</p>
-         </div>
+            <p>👨 You: @{matchData.creator_instagram}</p>
+            <p>👩 Them: @{matchData.responder_instagram}</p>
 
-       <div className="bg-white text-gray-800 p-2 rounded-lg mt-2">
-        <p className="text-sm">💌 Message from them:</p>
-         <p className="italic">"{matchData.responder_message}"</p>
-         </div>
+            <div className="bg-white text-gray-800 p-2 rounded-lg mt-2">
+              <p className="text-sm">💌 Message:</p>
+              <p className="italic">"{matchData.responder_message}"</p>
+            </div>
 
-        </div>
+            {/* 💬 CHAT */}
+            <div className="mt-4">
+              <h2 className="font-bold mb-2">💬 Chat</h2>
+
+              <div className="h-40 overflow-y-auto bg-white p-2 rounded border text-black">
+                {chat.map((msg, i) => (
+                  <p key={i}>
+                    <b>{msg.sender}:</b> {msg.message}
+                  </p>
+                ))}
+              </div>
+
+              <div className="flex mt-2">
+                <input
+                  value={newMsg}
+                  onChange={(e) => setNewMsg(e.target.value)}
+                  className="flex-1 p-2 border rounded"
+                  placeholder="Type message..."
+                />
+                <button
+                  onClick={sendMessage}
+                  className="ml-2 bg-pink-500 text-white px-3 rounded"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+
+          </div>
         )}
 
         <h1 className="text-2xl font-bold mb-3 text-purple-700">
@@ -214,9 +226,19 @@ function ViewPage() {
               onChange={(e) => setUserMsg(e.target.value)}
             />
 
+            {/* ERROR */}
+            {errorMsg && (
+              <p className="text-red-500 text-sm mb-2">{errorMsg}</p>
+            )}
+
             <button
+              disabled={!userInsta.trim() || !userMsg.trim()}
               onClick={sendResponse}
-              className="bg-pink-500 text-white px-4 py-2 rounded"
+              className={`px-4 py-2 rounded ${
+                !userInsta.trim() || !userMsg.trim()
+                  ? "bg-gray-400"
+                  : "bg-pink-500 text-white"
+              }`}
             >
               Send 💌
             </button>
